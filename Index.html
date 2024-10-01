@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four Window YouTube Player</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr auto;
+            height: 100vh;
+        }
+        .window {
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+        iframe {
+            width: 100%;
+            height: 70%;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button {
+            width: 22%;
+            font-size: 14px;
+            padding: 8px;
+        }
+        #fullscreen-button {
+            grid-column: span 2;
+            width: 100%;
+            height: 50px;
+            font-size: 20px;
+        }
+        .fullscreen-controls {
+            display: flex;
+            width: 100%;
+            grid-column: span 2;
+            margin-top: 10px;
+        }
+        #exit-fullscreen-button, #refresh-button {
+            flex: 1;
+            height: 50px;
+            font-size: 20px;
+            border: none;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        #exit-fullscreen-button {
+            background-color: red;
+            color: white;
+        }
+        #refresh-button {
+            background-color: green;
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+        .fullscreen-mode {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr auto;
+            height: 100vh;
+            background-color: black;
+        }
+        .fullscreen-mode .window {
+            background-color: black;
+            border: none;
+        }
+        .fullscreen-mode iframe {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="button-container">
+            <button onclick="playVideo(1, 'https://youtu.be/C396vXqe5X8')">MTV</button>
+            <button onclick="playVideo(1, 'https://youtu.be/bNyUyrR0PHo')">Al Jazeera</button>
+            <button onclick="playVideo(1, 'https://youtu.be/bCgJhh5qoog')">AlArabiya</button>
+            <button onclick="playVideo(1, 'https://youtu.be/e2RgSa1Wt5o')">Alaraby</button>
+        </div>
+        <iframe id="video1" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="window">
+        <div class="button-container">
+            <button onclick="playVideo(2, 'https://youtu.be/C396vXqe5X8')">MTV</button>
+            <button onclick="playVideo(2, 'https://youtu.be/bNyUyrR0PHo')">Al Jazeera</button>
+            <button onclick="playVideo(2, 'https://youtu.be/bCgJhh5qoog')">AlArabiya</button>
+            <button onclick="playVideo(2, 'https://youtu.be/e2RgSa1Wt5o')">Alaraby</button>
+        </div>
+        <iframe id="video2" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="window">
+        <div class="button-container">
+            <button onclick="playVideo(3, 'https://youtu.be/C396vXqe5X8')">MTV</button>
+            <button onclick="playVideo(3, 'https://youtu.be/bNyUyrR0PHo')">Al Jazeera</button>
+            <button onclick="playVideo(3, 'https://youtu.be/bCgJhh5qoog')">AlArabiya</button>
+            <button onclick="playVideo(3, 'https://youtu.be/e2RgSa1Wt5o')">Alaraby</button>
+        </div>
+        <iframe id="video3" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <div class="window">
+        <div class="button-container">
+            <button onclick="playVideo(4, 'https://youtu.be/C396vXqe5X8')">MTV</button>
+            <button onclick="playVideo(4, 'https://youtu.be/bNyUyrR0PHo')">Al Jazeera</button>
+            <button onclick="playVideo(4, 'https://youtu.be/bCgJhh5qoog')">AlArabiya</button>
+            <button onclick="playVideo(4, 'https://youtu.be/e2RgSa1Wt5o')">Alaraby</button>
+        </div>
+        <iframe id="video4" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <button id="fullscreen-button" onclick="enterFullscreen()">Enter Fullscreen Mode</button>
+
+    <!-- Fullscreen controls, initially hidden -->
+    <div id="fullscreen-controls" class="fullscreen-controls hidden">
+        <button id="exit-fullscreen-button" onclick="exitFullscreen()">EXIT</button>
+        <button id="refresh-button" onclick="refreshVideos()">SYNC</button>
+    </div>
+
+    <script>
+        function playVideo(windowNumber, videoUrl) {
+            const videoId = extractVideoId(videoUrl);
+            if (videoId) {
+                const iframe = document.getElementById(`video${windowNumber}`);
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+            } else {
+                alert("Invalid YouTube URL");
+            }
+        }
+
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function enterFullscreen() {
+            // Hide all button containers when entering fullscreen mode
+            const buttonContainers = document.querySelectorAll('.button-container');
+            buttonContainers.forEach(container => container.classList.add('hidden'));
+
+            // Show the fullscreen controls
+            document.getElementById("fullscreen-controls").classList.remove("hidden");
+            document.getElementById("fullscreen-button").classList.add("hidden");
+
+            // Add fullscreen-mode class to body for layout changes
+            document.body.classList.add('fullscreen-mode');
+
+            // Enter fullscreen using the browser API
+            const body = document.body;
+            if (body.requestFullscreen) {
+                body.requestFullscreen();
+            } else if (body.webkitRequestFullscreen) { // Safari
+                body.webkitRequestFullscreen();
+            } else if (body.msRequestFullscreen) { // IE/Edge
+                body.msRequestFullscreen();
+            } else if (body.mozRequestFullScreen) { // Firefox
+                body.mozRequestFullScreen();
+            }
+        }
+
+        function exitFullscreen() {
+            // Show all button containers when exiting fullscreen mode
+            const buttonContainers = document.querySelectorAll('.button-container');
+            buttonContainers.forEach(container => container.classList.remove('hidden'));
+
+            // Hide the fullscreen controls and show the fullscreen button again
+            document.getElementById("fullscreen-controls").classList.add("hidden");
+            document.getElementById("fullscreen-button").classList.remove("hidden");
+
+            // Remove the fullscreen-mode class from the body
+            document.body.classList.remove('fullscreen-mode');
+
+            // Exit fullscreen using the browser API
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { // Safari
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { // IE/Edge
+                document.msExitFullscreen();
+            } else if (document.mozCancelFullScreen) { // Firefox
+                document.mozCancelFullScreen();
+            }
+        }
+
+        function refreshVideos() {
+            // Reload all iframes to sync video playback
+            for (let i = 1; i <= 4; i++) {
+                const iframe = document.getElementById(`video${i}`);
+                const currentSrc = iframe.src; // Get the current video source
+                iframe.src = ''; // Clear the iframe source temporarily
+                iframe.src = currentSrc; // Set it back to reload and sync the video
+            }
+        }
+
+        // Listen for the fullscreenchange event to handle fullscreen exit correctly
+        document.addEventListener("fullscreenchange", function() {
+            if (!document.fullscreenElement) {
+                exitFullscreen();
+            }
+        });
+
+        document.addEventListener("webkitfullscreenchange", function() {
+            if (!document.webkitFullscreenElement) {
+                exitFullscreen();
+            }
+        });
+
+        document.addEventListener("mozfullscreenchange", function() {
+            if (!document.mozFullScreenElement) {
+                exitFullscreen();
+            }
+        });
+
+        document.addEventListener("MSFullscreenChange", function() {
+            if (!document.msFullscreenElement) {
+                exitFullscreen();
+            }
+        });
+    </script>
+
+</body>
+</html>
